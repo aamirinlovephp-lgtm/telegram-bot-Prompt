@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Master Prompt Marketplace — Premium AI prompts for ChatGPT, Claude, Gemini and more">
+    <title>Master Prompt Marketplace</title>
+
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Google Fonts — Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+
+    <!-- 🔧 CONFIGURE YOUR API SERVER URL HERE -->
+    <script>
+        // Set this to your bot server's public URL (Termux/VPS)
+        // Example: 'https://your-domain.com' or 'http://your-vps-ip:8000'
+        window.API_BASE_URL = 'http://localhost:8000';
+    </script>
+</head>
+<body>
+
+    <!-- ═══ Loading Screen ═══ -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <div class="pulse-ring"></div>
+                <span class="loading-icon">🎯</span>
+            </div>
+            <h2 class="loading-title">Master Prompts</h2>
+            <p class="loading-subtitle">Loading marketplace...</p>
+            <div class="loading-bar">
+                <div class="loading-bar-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ App Container ═══ -->
+    <div id="app" class="app-container" style="display:none;">
+
+        <!-- ── Top Header Bar ── -->
+        <header id="app-header" class="app-header">
+            <div class="header-left">
+                <button id="header-back-btn" class="header-btn hidden" onclick="App.goBack()">
+                    <span>←</span>
+                </button>
+                <h1 id="header-title" class="header-title">🎯 Master Prompts</h1>
+            </div>
+            <div class="header-right">
+                <div id="credits-badge" class="credits-badge" onclick="App.navigate('wallet')">
+                    <span class="credits-icon">⭐</span>
+                    <span id="credits-count" class="credits-count">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ── Page Container ── -->
+        <main id="page-container" class="page-container">
+
+            <!-- ════════ HOME PAGE ════════ -->
+            <section id="page-home" class="page active">
+                <!-- Hero Section -->
+                <div class="hero-section">
+                    <div class="hero-greeting">
+                        <h2 id="hero-name">Welcome! 👋</h2>
+                        <p class="hero-subtitle">Discover premium AI prompts</p>
+                    </div>
+                </div>
+
+                <!-- Quick Actions — Free & Paid -->
+                <div class="quick-actions">
+                    <button class="action-card action-free" onclick="App.navigate('free')">
+                        <span class="action-icon">🆓</span>
+                        <span class="action-label">Free Prompts</span>
+                        <span class="action-badge" id="free-count-badge">0</span>
+                    </button>
+                    <button class="action-card action-paid" onclick="App.navigate('paid')">
+                        <span class="action-icon">💎</span>
+                        <span class="action-label">Paid Prompts</span>
+                        <span class="action-badge" id="paid-count-badge">0</span>
+                    </button>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input id="search-input" type="text" placeholder="Search prompts..." class="search-input"
+                               oninput="App.debounceSearch(this.value)">
+                    </div>
+                </div>
+
+                <!-- Featured Section -->
+                <div id="featured-section" class="section">
+                    <div class="section-header">
+                        <h3 class="section-title">⭐ Featured</h3>
+                    </div>
+                    <div id="featured-list" class="prompt-scroll-list"></div>
+                </div>
+
+                <!-- New Arrivals -->
+                <div id="new-section" class="section">
+                    <div class="section-header">
+                        <h3 class="section-title">🆕 New Arrivals</h3>
+                    </div>
+                    <div id="new-list" class="prompt-grid"></div>
+                </div>
+
+                <!-- Categories -->
+                <div id="categories-section" class="section">
+                    <div class="section-header">
+                        <h3 class="section-title">🗂 Categories</h3>
+                    </div>
+                    <div id="categories-list" class="categories-grid"></div>
+                </div>
+            </section>
+
+            <!-- ════════ FREE PROMPTS PAGE ════════ -->
+            <section id="page-free" class="page">
+                <div class="page-header-section">
+                    <h2 class="page-title">🆓 Free Prompts</h2>
+                    <p class="page-desc">No credits needed — completely free!</p>
+                </div>
+                <div id="free-prompts-list" class="prompt-grid"></div>
+                <div id="free-loading" class="loading-more hidden">Loading...</div>
+                <div id="free-empty" class="empty-state hidden">
+                    <span class="empty-icon">📭</span>
+                    <p>No free prompts available yet</p>
+                </div>
+            </section>
+
+            <!-- ════════ PAID PROMPTS PAGE ════════ -->
+            <section id="page-paid" class="page">
+                <div class="page-header-section">
+                    <h2 class="page-title">💎 Paid Prompts</h2>
+                    <p class="page-desc">Premium prompts — unlock with credits</p>
+                </div>
+                <div id="paid-prompts-list" class="prompt-grid"></div>
+                <div id="paid-loading" class="loading-more hidden">Loading...</div>
+                <div id="paid-empty" class="empty-state hidden">
+                    <span class="empty-icon">📭</span>
+                    <p>No paid prompts available yet</p>
+                </div>
+            </section>
+
+            <!-- ════════ PROMPT DETAIL PAGE ════════ -->
+            <section id="page-detail" class="page">
+                <div id="prompt-detail-content" class="detail-container"></div>
+            </section>
+
+            <!-- ════════ SEARCH RESULTS ════════ -->
+            <section id="page-search" class="page">
+                <div class="page-header-section">
+                    <h2 class="page-title">🔍 Search Results</h2>
+                    <p id="search-query-label" class="page-desc"></p>
+                </div>
+                <div id="search-results-list" class="prompt-grid"></div>
+                <div id="search-empty" class="empty-state hidden">
+                    <span class="empty-icon">🔍</span>
+                    <p>No results found</p>
+                </div>
+            </section>
+
+            <!-- ════════ WALLET PAGE ════════ -->
+            <section id="page-wallet" class="page">
+                <div class="wallet-header">
+                    <div class="wallet-balance-card">
+                        <span class="wallet-label">Your Balance</span>
+                        <div class="wallet-amount">
+                            <span class="wallet-icon">⭐</span>
+                            <span id="wallet-credits" class="wallet-credits">0</span>
+                            <span class="wallet-unit">Credits</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <h3 class="section-title">📦 My Purchases</h3>
+                    <div id="purchases-list" class="prompt-grid"></div>
+                    <div id="purchases-empty" class="empty-state hidden">
+                        <span class="empty-icon">🛒</span>
+                        <p>No purchases yet</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- ── Bottom Navigation ── -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="App.navigate('home')" data-page="home">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </button>
+            <button class="nav-item" onclick="App.navigate('free')" data-page="free">
+                <span class="nav-icon">🆓</span>
+                <span class="nav-label">Free</span>
+            </button>
+            <button class="nav-item" onclick="App.navigate('paid')" data-page="paid">
+                <span class="nav-icon">💎</span>
+                <span class="nav-label">Paid</span>
+            </button>
+            <button class="nav-item" onclick="App.navigate('wallet')" data-page="wallet">
+                <span class="nav-icon">💰</span>
+                <span class="nav-label">Wallet</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- ═══ Toast Notification ═══ -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>

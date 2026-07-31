@@ -1,0 +1,191 @@
+/* ════════════════════════════════════════════════════════════════
+   animations.css — Micro-animations & Transitions
+   Smooth, performant animations for ultra-premium UX
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Keyframes ─────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes loading-slide {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(150%); }
+  100% { transform: translateX(300%); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(124, 77, 255, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(124, 77, 255, 0.4); }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ── Page Transitions ──────────────────────────────────────── */
+.page.active {
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* ── Card Entrance Animations ──────────────────────────────── */
+.prompt-card {
+  animation: fadeInUp 0.3s ease-out backwards;
+}
+
+.prompt-card:nth-child(1) { animation-delay: 0.03s; }
+.prompt-card:nth-child(2) { animation-delay: 0.06s; }
+.prompt-card:nth-child(3) { animation-delay: 0.09s; }
+.prompt-card:nth-child(4) { animation-delay: 0.12s; }
+.prompt-card:nth-child(5) { animation-delay: 0.15s; }
+.prompt-card:nth-child(6) { animation-delay: 0.18s; }
+.prompt-card:nth-child(7) { animation-delay: 0.21s; }
+.prompt-card:nth-child(8) { animation-delay: 0.24s; }
+
+.scroll-card {
+  animation: slideInRight 0.3s ease-out backwards;
+}
+
+.scroll-card:nth-child(1) { animation-delay: 0.05s; }
+.scroll-card:nth-child(2) { animation-delay: 0.1s; }
+.scroll-card:nth-child(3) { animation-delay: 0.15s; }
+.scroll-card:nth-child(4) { animation-delay: 0.2s; }
+.scroll-card:nth-child(5) { animation-delay: 0.25s; }
+
+.category-card {
+  animation: fadeInUp 0.3s ease-out backwards;
+}
+
+.category-card:nth-child(1) { animation-delay: 0.03s; }
+.category-card:nth-child(2) { animation-delay: 0.06s; }
+.category-card:nth-child(3) { animation-delay: 0.09s; }
+.category-card:nth-child(4) { animation-delay: 0.12s; }
+.category-card:nth-child(5) { animation-delay: 0.15s; }
+.category-card:nth-child(6) { animation-delay: 0.18s; }
+
+/* ── Interactive Hover Effects (desktop) ───────────────────── */
+@media (hover: hover) {
+  .prompt-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-active);
+  }
+
+  .prompt-card-free:hover {
+    border-color: rgba(0, 230, 118, 0.4);
+    box-shadow: var(--shadow-glow-free);
+  }
+
+  .prompt-card-paid:hover {
+    border-color: rgba(124, 77, 255, 0.4);
+    box-shadow: var(--shadow-glow-paid);
+  }
+
+  .scroll-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .category-card:hover {
+    background: var(--bg-glass-hover);
+    transform: translateY(-1px);
+  }
+
+  .action-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .action-free:hover {
+    box-shadow: var(--shadow-glow-free);
+    border-color: rgba(0, 230, 118, 0.4);
+  }
+
+  .action-paid:hover {
+    box-shadow: var(--shadow-glow-paid);
+    border-color: rgba(124, 77, 255, 0.4);
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+  }
+
+  .btn-free:hover { box-shadow: 0 6px 25px rgba(0, 230, 118, 0.3); }
+  .btn-primary:hover { box-shadow: 0 6px 25px rgba(124, 77, 255, 0.3); }
+  .btn-buy:hover { box-shadow: 0 6px 25px rgba(255, 215, 64, 0.3); }
+
+  .nav-item:hover {
+    color: var(--text-primary);
+  }
+
+  .header-btn:hover {
+    background: var(--bg-glass-hover);
+  }
+
+  .credits-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(255, 215, 64, 0.3);
+  }
+}
+
+/* ── Touch Feedback ────────────────────────────────────────── */
+.prompt-card:active,
+.scroll-card:active,
+.category-card:active {
+  transition-duration: 0.1s;
+}
+
+/* ── Skeleton Loading ──────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-glass) 25%,
+    var(--bg-glass-hover) 50%,
+    var(--bg-glass) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Reduced Motion ────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
