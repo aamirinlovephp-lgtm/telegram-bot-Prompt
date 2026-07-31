@@ -32,9 +32,15 @@ const App = (() => {
       document.getElementById('app').style.display = 'flex';
     } catch (error) {
       console.error('Init failed:', error);
-      showToast('Failed to connect. Check API server.', 'error');
-      document.getElementById('loading-screen').querySelector('.loading-subtitle').textContent =
-        'Connection failed. Please try again.';
+      console.error('API URL:', API.API_BASE_URL);
+      const subtitle = document.getElementById('loading-screen').querySelector('.loading-subtitle');
+      if (API.API_BASE_URL.includes('localhost') || API.API_BASE_URL.includes('REPLACE')) {
+        subtitle.innerHTML = 'API server not configured.<br><small>Set API_PUBLIC_URL in .env and restart bot.</small>';
+      } else {
+        subtitle.innerHTML = `Connection failed.<br><small>API: ${API.API_BASE_URL}</small><br><small>Tap to retry</small>`;
+        subtitle.style.cursor = 'pointer';
+        subtitle.onclick = () => { subtitle.textContent = 'Retrying...'; init(); };
+      }
     }
   }
 
