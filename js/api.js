@@ -9,13 +9,34 @@ const API = (() => {
   let _token = null;
 
   // ══════════════════════════════════════════════════════════════
-  // 🔧 CONFIGURATION — Set this to your bot server's public URL
-  // Examples:
-  //   'https://your-domain.com'
-  //   'https://your-vps-ip:8000'
-  //   'http://localhost:8000' (local dev only)
+  // 🔧 API URL — Auto-detected in priority order:
+  //   1. URL parameter: ?api=https://your-server.com
+  //   2. window.API_BASE_URL (set in index.html)
+  //   3. Same origin (when served from /app/ on the API server)
+  //   4. Fallback to localhost (dev only)
   // ══════════════════════════════════════════════════════════════
-  const API_BASE_URL = window.API_BASE_URL || 'http://localhost:8000';
+  function _detectApiUrl() {
+    // 1. Check URL parameter (bot passes this when opening Mini App)
+    const params = new URLSearchParams(window.location.search);
+    const fromParam = params.get('api');
+    if (fromParam) return fromParam.replace(/\/+$/, '');
+
+    // 2. Check window config (set in index.html <script> tag)
+    const fromWindow = window.API_BASE_URL;
+    if (fromWindow && !fromWindow.includes('REPLACE') && !fromWindow.includes('example')) {
+      return fromWindow.replace(/\/+$/, '');
+    }
+
+    // 3. If served from the API server's /app/ path, use same origin
+    if (window.location.pathname.startsWith('/app')) {
+      return window.location.origin;
+    }
+
+    // 4. Fallback for local dev
+    return 'http://localhost:8000';
+  }
+
+  const API_BASE_URL = _detectApiUrl();
 
   function setToken(token) {
     _token = token;
